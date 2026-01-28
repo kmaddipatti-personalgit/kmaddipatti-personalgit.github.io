@@ -86,6 +86,7 @@ html {
 
     /* Official LX Gradient applied to whole title */
     background: linear-gradient(135deg, #FFC72C, #E4007F, #00B2EE);
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 
@@ -263,6 +264,8 @@ html {
     font-family: 'Krona One', sans-serif;
     color: var(--seahawks-green);
     /* Extra flair */
+    -webkit-text-stroke: 0.3px var(--seahawks-navy);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
 .score-input-container .score-box:last-child label {
@@ -270,6 +273,8 @@ html {
     font-size: 1.5rem;
     color: #C60C30;
     /* Patriots red text for label */
+    -webkit-text-stroke: 0.2px var(--patriots-navy);
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
 }
 
 /* Apply fonts and colors to selection cards - Using Variables */
