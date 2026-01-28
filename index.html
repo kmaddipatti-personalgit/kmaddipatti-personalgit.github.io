@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Bowl 2026 Invitation</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;900&family=Krona+One&family=Bebas+Neue&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Step 1: Selection Screen -->
+        <div id="selection-screen" class="screen">
+            <img src="https://upload.wikimedia.org/wikipedia/en/a/a2/National_Football_League_logo.svg" alt="NFL Logo"
+                class="superbowl-logo">
+            <h1 class="superbowl-title">SUPER BOWL <span class="roman-numeral">LX</span></h1>
+            <p class="subtitle">Predict the Winner</p>
+
+            <div class="team-selection">
+                <div class="team-card" data-team="seahawks" onclick="selectTeam('seahawks')">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/8/8e/Seattle_Seahawks_logo.svg"
+                        alt="Seahawks Logo" class="team-logo">
+                    <h2>Seahawks</h2>
+                </div>
+                <div class="team-card" data-team="patriots" onclick="selectTeam('patriots')">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/b/b9/New_England_Patriots_logo.svg"
+                        alt="Patriots Logo" class="team-logo">
+                    <h2>Patriots</h2>
+                </div>
+            </div>
+
+            <div class="name-input-container">
+                <input type="text" id="player-name" placeholder="YOUR NAME" autocomplete="on">
+            </div>
+
+            <div class="score-input-container">
+                <div class="score-box">
+                    <label>Seahawks</label>
+                    <input type="number" id="seahawks-score" placeholder="0" min="0">
+                </div>
+                <span class="hyphen">-</span>
+                <div class="score-box">
+                    <label>Patriots</label>
+                    <input type="number" id="patriots-score" placeholder="0" min="0">
+                </div>
+            </div>
+
+            <div id="error-message" class="hidden error-message">Pick a side MATE!!</div>
+            <button id="start-btn" onclick="startGame()" disabled>Kickoff</button>
+        </div>
+
+        <!-- Step 2: The Game (Football Field) -->
+        <div id="game-screen" class="screen hidden">
+            <div class="scoreboard-display">
+                <div class="team-score">
+                    <span id="game-team-name-1">Seahawks</span>
+                    <span id="game-score-1" class="score-digit">0</span>
+                </div>
+                <div class="game-clock">Q4 0:02</div>
+                <div class="team-score">
+                    <span id="game-team-name-2">Patriots</span>
+                    <span id="game-score-2" class="score-digit">0</span>
+                </div>
+            </div>
+            <p class="instruction-text">Drag the ball to your team's endzone to win!</p>
+            <div class="field-container">
+                <div class="endzone seahawks-endzone" id="endzone-seahawks">
+                    <div class="pylon corner-tl"></div>
+                    <div class="pylon corner-tr"></div>
+                    <div class="pylon corner-bl"></div>
+                    <div class="pylon corner-br"></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6f/National_Football_Conference_logo.svg"
+                        alt="NFC" class="endzone-logo">
+                    <svg viewBox="0 0 300 70" class="endzone-text-svg">
+                        <path id="curve-sea" d="M 10,60 Q 150,10 290,60" fill="transparent" />
+                        <text width="300">
+                            <!-- Removed direct fill="white", will use CSS -->
+                            <textPath href="#curve-sea" startOffset="50%" text-anchor="middle"
+                                class="endzone-text-fill">SEAHAWKS
+                            </textPath>
+                        </text>
+                    </svg>
+                    <img src="https://upload.wikimedia.org/wikipedia/en/8/8e/Seattle_Seahawks_logo.svg" alt="Seahawks"
+                        class="endzone-logo">
+                </div>
+                <div class="field-play-area">
+                    <!-- Center Field Logo -->
+                    <img src="Super_Bowl_LX_Logo.svg" class="field-center-logo" alt="SBLX">
+
+                    <!-- Yard Markers -->
+                    <div class="yard-line-numbers left">
+                        <span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>40</span><span>30</span><span>20</span><span>10</span>
+                    </div>
+                    <div class="yard-line-numbers right">
+                        <span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>40</span><span>30</span><span>20</span><span>10</span>
+                    </div>
+
+                    <img id="football"
+                        src="https://raw.githubusercontent.com/twitter/twemoji/master/assets/svg/1f3c8.svg"
+                        draggable="true" alt="Football">
+                </div>
+                <div class="endzone patriots-endzone" id="endzone-patriots">
+                    <div class="pylon corner-tl"></div>
+                    <div class="pylon corner-tr"></div>
+                    <div class="pylon corner-bl"></div>
+                    <div class="pylon corner-br"></div>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/American_Football_Conference_logo.svg"
+                        alt="AFC" class="endzone-logo">
+                    <svg viewBox="0 0 300 70" class="endzone-text-svg">
+                        <!-- Flatter curve: Q 150,30 instead of 150,10 -->
+                        <path id="curve-pat" d="M 10,60 Q 150,30 290,60" fill="transparent" />
+                        <text width="300">
+                            <!-- Removed direct fill="white", will use CSS -->
+                            <textPath href="#curve-pat" startOffset="50%" text-anchor="middle"
+                                class="endzone-text-fill">PATRIOTS
+                            </textPath>
+                        </text>
+                    </svg>
+                    <img src="https://upload.wikimedia.org/wikipedia/en/b/b9/New_England_Patriots_logo.svg"
+                        alt="Patriots" class="endzone-logo">
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Step 3: The Reveal -->
+        <div id="reveal-screen" class="screen hidden">
+            <h1 class="superbowl-title">TOUCHDOWN!</h1>
+
+            <div class="invite-details">
+                <h2>You're Invited, <span id="invitee-name"></span>!</h2>
+                <div class="detail-card">
+                    <p><strong>When:</strong> February 8, 2026</p>
+                    <p><strong>Where:</strong> <a
+                            href="https://www.google.com/maps/search/?api=1&query=1108+Crossvine+Trail+Durham,+NC+27703"
+                            target="_blank" class="map-link">1108 Crossvine Trail Durham, NC 27703</a></p>
+                    <p><strong>Time:</strong> 5:30 PM EST</p>
+                </div>
+                <p>Come watch the <span id="winning-team-name">Winner</span> take it all!</p>
+
+                <div class="calendar-actions">
+                    <button onclick="addToICal()" class="calendar-btn ios-btn">
+                        Add to Calendar (iPhone)
+                    </button>
+                    <button onclick="addToGoogleCalendar()" class="calendar-btn google-btn">
+                        Add to Calendar (Android)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
