@@ -1,0 +1,775 @@
+:root {
+    --seahawks-navy: #002244;
+    --seahawks-green: #69BE28;
+    --seahawks-blue-bg: #002244;
+    /* User requested blue bg */
+
+    --patriots-navy: #002244;
+    --patriots-red: #C60C30;
+    --patriots-blue-bg: #002244;
+    /* User requested blue bg */
+
+    --field-green: #4C9A2A;
+    --text-color: #333;
+    --white: #ffffff;
+}
+
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    /* Super Bowl LX (60) Official Gradient Theme: Pink -> Blue -> Gold */
+    background: linear-gradient(135deg, #E4007F 0%, #00B2EE 50%, #FFC72C 100%);
+    background-size: 200% 200%;
+    animation: gradientBG 15s ease infinite;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.screen {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+
+    /* Super Bowl LX Gradient Background */
+    background: linear-gradient(135deg, rgba(228, 0, 127, 0.95), rgba(0, 178, 238, 0.95), rgba(255, 199, 44, 0.95));
+    backdrop-filter: blur(12px);
+
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    /* Expanded max-width for reveal screen content */
+    max-width: 700px;
+    text-align: center;
+    transition: opacity 0.5s ease;
+
+    /* Text color update for dark background */
+    color: white;
+}
+
+.superbowl-logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.superbowl-title {
+    font-size: 3.5rem;
+    /* Matched to Roman Numeral size */
+    font-weight: 900;
+    margin: 0;
+
+    /* Official LX Gradient applied to whole title */
+    background: linear-gradient(135deg, #FFC72C, #E4007F, #00B2EE);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    letter-spacing: -1px;
+    text-shadow: none;
+    /* Remove shadow to let gradient shine, or use filter drop-shadow if needed */
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.roman-numeral {
+    font-size: 3.5rem;
+    /* Inherit gradient from parent or keep distinct if needed, but user asked for "same style" */
+    /* background: inherit; -webkit-background-clip: text; -webkit-text-fill-color: transparent; */
+    /* background: linear-gradient(135deg, #FFC72C, #E4007F); */
+    /* Gold to Pink */
+    /* -webkit-background-clip: text; */
+    /* -webkit-text-fill-color: transparent; */
+}
+
+/* ... existing styles ... */
+/* NOTE: I am skipping matching context to jump to the input change in this single tool call if possible, 
+   but since they are far apart, I will use multiple replace calls or check if I can range it. 
+   Safest to use specific smaller chunks or multi_replace.
+   I will stick to single tool call per logical unit if possible, or use multi_replace.
+   I will use multi_replace here.
+*/
+
+.subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 5px;
+    margin-bottom: 25px;
+    font-weight: 500;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Selection Screen */
+.team-selection {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.team-card {
+    position: relative;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 200px;
+    background: transparent;
+    /* Handled by ::after */
+    border: none;
+    z-index: 1;
+    /* Stacking context */
+}
+
+/* Fast Gradient Border - Hidden by default */
+.team-card::before {
+    content: "";
+    position: absolute;
+    inset: -5px;
+    /* Border width */
+    border-radius: 13px;
+    /* 8px + 5px */
+    background: linear-gradient(135deg, #FFC72C, #E4007F, #00B2EE);
+    background-size: 200% 200%;
+    animation: gradientBG 2s linear infinite;
+    /* Fast transition */
+    z-index: -2;
+    opacity: 0;
+    /* Hidden initially */
+    transition: opacity 0.3s;
+}
+
+/* Card Background */
+.team-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    background-color: var(--card-bg, #333);
+    z-index: -1;
+    /* Optional: Add a subtle border for unselected state */
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+}
+
+.team-card.selected {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.6);
+}
+
+.team-card.selected::before {
+    opacity: 1;
+    /* Show gradient border only when selected */
+}
+
+.team-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin: 0 auto 10px;
+    display: block;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+/* Name Input */
+.name-input-container {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+#player-name {
+    width: 80%;
+    max-width: 300px;
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid white;
+    font-size: 1.2rem;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-weight: bold;
+    /* Removed uppercase enforcement so user sees what they type */
+}
+
+#player-name::placeholder {
+    color: #888;
+    text-transform: none;
+    font-weight: normal;
+}
+
+.score-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.score-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.score-box label {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hyphen {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.score-input-container .score-box:first-child label {
+    font-family: 'Krona One', sans-serif;
+    color: var(--seahawks-green);
+    /* Extra flair */
+}
+
+.score-input-container .score-box:last-child label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    color: #C60C30;
+    /* Patriots red text for label */
+}
+
+/* Apply fonts and colors to selection cards - Using Variables */
+.team-card[data-team="seahawks"] {
+    --card-bg: var(--seahawks-navy);
+}
+
+.team-card[data-team="seahawks"] h2 {
+    font-family: 'Krona One', sans-serif;
+    color: var(--seahawks-green);
+    /* Action Green text */
+    letter-spacing: 1px;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    width: 100%;
+}
+
+.team-card[data-team="patriots"] {
+    --card-bg: var(--patriots-red);
+}
+
+.team-card[data-team="patriots"] h2 {
+    font-family: 'Bebas Neue', sans-serif;
+    /* Bigger for Bebas */
+    font-size: 2rem;
+    color: white;
+    /* White text on Red */
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    width: 100%;
+    margin-top: 5px;
+    /* Fine tune */
+}
+
+input[type="number"] {
+    width: 60px;
+    height: 40px;
+    font-size: 1.5rem;
+    text-align: center;
+    border: 2px solid white;
+    background: white;
+    color: black;
+    border-radius: 8px;
+}
+
+#start-btn {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    background-color: var(--seahawks-navy);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+#start-btn:disabled {
+    background-color: #cccccc;
+    color: #888888;
+    cursor: not-allowed;
+    opacity: 1;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-5px);
+    }
+}
+
+/* Game Screen */
+.scoreboard-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: black;
+    color: white;
+    /* Updated to white per request */
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+}
+
+.team-score {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    /* Space between name and score */
+}
+
+.score-digit {
+    font-size: 2rem;
+    display: inline-block;
+    min-width: 40px;
+}
+
+.field-container {
+    height: 400px;
+    background-color: var(--field-green);
+    border: 5px solid white;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.endzone {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color: white;
+    font-weight: 900;
+    letter-spacing: 2px;
+    font-size: 1.5rem;
+    position: relative;
+    /* For absolute text centering */
+}
+
+.endzone-logo {
+    height: 50px;
+    width: auto;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.3));
+    z-index: 2;
+    /* Keep logo above text if overlap, though text is centered */
+}
+
+.seahawks-endzone {
+    background-color: var(--seahawks-navy);
+    font-family: 'Krona One', sans-serif;
+    letter-spacing: 1px;
+}
+
+.patriots-endzone {
+    background-color: var(--patriots-red);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+
+/* Curved Text SVG - Absolute Centering */
+.endzone-text-svg {
+    height: 100%;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60%;
+    max-width: 400px;
+    overflow: visible;
+    z-index: 1;
+}
+
+.endzone-text-svg text {
+    font-size: 38px;
+    font-weight: 900;
+    font-family: inherit;
+    letter-spacing: 2px;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* Adjust Patriots Text Spacing/Size */
+.patriots-endzone .endzone-text-svg text {
+    letter-spacing: 15px;
+    font-size: 55px;
+}
+
+/* Adjust Patriots Team Logo size */
+.patriots-endzone .endzone-logo:last-child {
+    height: 65px;
+}
+
+.field-play-area {
+    flex-grow: 1;
+    position: relative;
+    background-color: var(--field-green);
+    /* Professional Field Markings - Solid White */
+    background-image:
+        /* 10-Yard Lines */
+        repeating-linear-gradient(to bottom,
+            rgba(255, 255, 255, 1) 0, rgba(255, 255, 255, 1) 2px,
+            transparent 2px, transparent 10%),
+        /* 1-Yard Hash Marks (Left Column) */
+        repeating-linear-gradient(to bottom,
+            rgba(255, 255, 255, 1) 0, rgba(255, 255, 255, 1) 1px,
+            transparent 1px, transparent 1%),
+        /* 1-Yard Hash Marks (Right Column) */
+        repeating-linear-gradient(to bottom,
+            rgba(255, 255, 255, 1) 0, rgba(255, 255, 255, 1) 1px,
+            transparent 1px, transparent 1%);
+
+    background-size: 100% 100%, 12px 100%, 12px 100%;
+    background-position: 0 0, 38% 0, 62% 0;
+    background-repeat: no-repeat, repeat-y, repeat-y;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.field-center-logo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -75%);
+    width: 120px;
+    opacity: 1.0;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.yard-line-numbers {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 40px;
+    pointer-events: none;
+    z-index: 1;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.yard-line-numbers.left {
+    left: 25px;
+}
+
+.yard-line-numbers.right {
+    right: 25px;
+}
+
+.yard-line-numbers span {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    width: 100%;
+    text-align: center;
+    letter-spacing: 3.5px;
+    /* Added separation between digits */
+}
+
+/* Align each number directly with the 10-yard lines (10% steps) */
+.yard-line-numbers span:nth-child(1) {
+    top: 10%;
+}
+
+.yard-line-numbers span:nth-child(2) {
+    top: 20%;
+}
+
+.yard-line-numbers span:nth-child(3) {
+    top: 30%;
+}
+
+.yard-line-numbers span:nth-child(4) {
+    top: 40%;
+}
+
+.yard-line-numbers span:nth-child(5) {
+    top: 50%;
+}
+
+.yard-line-numbers span:nth-child(6) {
+    top: 60%;
+}
+
+.yard-line-numbers span:nth-child(7) {
+    top: 70%;
+}
+
+.yard-line-numbers span:nth-child(8) {
+    top: 80%;
+}
+
+.yard-line-numbers span:nth-child(9) {
+    top: 90%;
+}
+
+#football {
+    width: 60px;
+    height: auto;
+    cursor: grab;
+    user-select: none;
+    position: absolute;
+    z-index: 10;
+    transition: transform 0.1s;
+    filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
+}
+
+#football:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+}
+
+/* Reveal Screen */
+.celebration-text {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: black;
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.invite-details {
+    background: rgba(255, 255, 255, 0);
+    padding: 20px;
+    border-radius: 12px;
+    color: black;
+}
+
+.invite-details h2 {
+    color: black;
+}
+
+.invite-details p {
+    color: black;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.detail-card {
+    background: none;
+    margin: 20px 0;
+    font-size: 1.2rem;
+    color: black;
+    text-shadow: none;
+}
+
+#winning-team-name {
+    font-weight: 900;
+    font-size: 1.5rem;
+}
+
+#invitee-name {
+    text-transform: capitalize;
+}
+
+/* Calendar Actions */
+.calendar-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.calendar-btn {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: white;
+    text-transform: uppercase;
+}
+
+.calendar-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.ios-btn {
+    background-color: #333;
+}
+
+.google-btn {
+    background-color: #4285F4;
+}
+
+/* Map Link */
+.map-link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-decoration-color: black;
+    /* Changed to black per request */
+    transition: color 0.2s;
+}
+
+.map-link:hover {
+    color: #333;
+    /* Dark gray on hover */
+    text-decoration-color: #333;
+}
+
+/* Generic Team Card Title alignment */
+.team-card h2 {
+    margin: 0;
+    margin-top: 10px;
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* Team Specific Text Colors in Endzone */
+.seahawks-endzone .endzone-text-fill {
+    fill: var(--seahawks-green);
+}
+
+.patriots-endzone .endzone-text-fill {
+    fill: #ffffff;
+    /* Keeping white for best contrast against red, consistent with uniforms */
+    stroke: #002244;
+    /* Navy stroke for pop */
+    stroke-width: 1px;
+}
+
+/* Pylons */
+.pylon {
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background-color: #FF6700;
+    /* Neon Pylon Orange */
+    border-radius: 50%;
+    z-index: 5;
+    box-shadow: 0 0 4px rgba(255, 103, 0, 0.8);
+}
+
+.corner-tl {
+    top: -2.5px;
+    left: -2.5px;
+}
+
+.corner-tr {
+    top: -2.5px;
+    right: -2.5px;
+}
+
+.corner-bl {
+    bottom: -2.5px;
+    left: -2.5px;
+}
+
+.corner-br {
+    bottom: -2.5px;
+    right: -2.5px;
+}
+
+/* Ensure they are visible at the edges of the field container */
+.field-container {
+    overflow: visible !important;
+    /* Allow pylons to peek out slightly */
+}
+
+/* Main Screen Logo Replacing Title */
+.superbowl-main-logo {
+    width: 280px;
+    height: auto;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.3));
+    animation: floatLogo 6s ease-in-out infinite;
+}
+
+@keyframes floatLogo {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
