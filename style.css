@@ -640,6 +640,74 @@ input[type="number"] {
     text-shadow: none;
 }
 
+/* RSVP Section */
+.rsvp-section {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.rsvp-section h3 {
+    margin-bottom: 20px;
+    font-size: 1.4rem;
+    color: black;
+}
+
+.rsvp-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.rsvp-btn {
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-transform: uppercase;
+}
+
+.rsvp-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.yes-btn {
+    background-color: var(--seahawks-green);
+    color: white;
+}
+
+.no-btn {
+    background-color: #C60C30;
+    color: white;
+}
+
+.rsvp-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#rsvp-confirmation {
+    margin-top: 15px;
+    font-weight: bold;
+    color: black;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 #winning-team-name {
     font-weight: 900;
     font-size: 1.5rem;
@@ -697,67 +765,6 @@ input[type="number"] {
     color: #333;
     /* Dark gray on hover */
     text-decoration-color: #333;
-}
-
-/* RSVP Section */
-.rsvp-section {
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    /* Animation delayed to appear after confetti/reveal */
-    animation: slideUp 0.6s ease-out 2.5s both;
-}
-
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.rsvp-question {
-    font-size: 1.4rem;
-    font-weight: 900;
-    color: black;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-}
-
-.rsvp-actions {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.rsvp-btn {
-    padding: 12px 30px;
-    font-size: 1.2rem;
-    font-weight: 800;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
-    text-transform: uppercase;
-    color: white;
-}
-
-.rsvp-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.rsvp-btn.yes {
-    background-color: var(--seahawks-green); /* Positive */
-}
-
-.rsvp-btn.no {
-    background-color: var(--patriots-red); /* Negative */
-}
-
-.rsvp-thank-you {
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: var(--seahawks-green);
-    margin-top: 15px;
-    display: block;
 }
 
 /* Generic Team Card Title alignment */

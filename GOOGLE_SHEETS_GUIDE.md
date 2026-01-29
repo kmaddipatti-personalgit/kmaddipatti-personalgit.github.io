@@ -11,13 +11,15 @@ To save responses (Name, Team Pick, Scores) to a Google Spreadsheet, follow thes
    - **Column C**: Selected Team
    - **Column D**: Seahawks Score
    - **Column E**: Patriots Score
+   - **Column F**: Session ID (Don't touch this!)
+   - **Column G**: RSVP (Yes/No)
 
 ## Step 2: Add the Google Apps Script
 1. In your new Sheet, go to **Extensions** > **Apps Script**.
 2. Delete any code in the `Code.gs` file and paste the following:
 
 ```javascript
-const SHEET_NAME = "Sheet1"; // Make sure this matches your tab name
+const SHEET_NAME = "Sheet1";
 
 function doPost(e) {
   const lock = LockService.getScriptLock();
@@ -27,34 +29,60 @@ function doPost(e) {
     const doc = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = doc.getSheetByName(SHEET_NAME);
 
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    const nextRow = sheet.getLastRow() + 1;
-
-    // Parse data sent from the app
-    // We expect JSON data in the body
+    // Parse data
     const data = JSON.parse(e.postData.contents);
+    
+    // We expect headers: Date, Name, Team, S-Score, P-Score, SessionID, RSVP
+    const headers = sheet.getRange(1, 1, 1, 7).getValues()[0];
+    
+    // Check if we are updating an existing session (RSVP)
+    if (data.action === "update_rsvp" && data.sessionId) {
+       // Search for the row with this SessionID (Column 6 aka F)
+       const lastRow = sheet.getLastRow();
+       if (lastRow > 1) {
+         // Get all SessionIDs from Column F (index 6)
+         // Note: getRange(row, col, numRows, numCols)
+         const sessionIds = sheet.getRange(2, 6, lastRow - 1, 1).getValues().flat();
+         
+         // Find index (add 2 to adjust for 0-index and header row)
+         const rowIndex = sessionIds.indexOf(data.sessionId);
+         
+         if (rowIndex !== -1) {
+            // Update RSVP column (Column 7 aka G)
+            sheet.getRange(rowIndex + 2, 7).setValue(data.rsvp);
+            return jsonResponse({ "result": "updated", "row": rowIndex + 2 });
+         }
+       }
+       // If not found, fall through (or error? better to just log it)
+    }
 
+    // Default: Append new row (Invite Score Submission)
     const newRow = [
-      new Date(),           // Date
-      data.playerName,      // Name
-      data.selectedTeam,    // Team
-      data.seahawksScore,   // S Score
-      data.patriotsScore    // P Score
+      new Date(),           // A: Date
+      data.playerName,      // B: Name
+      data.selectedTeam,    // C: Team
+      data.seahawksScore,   // D: S Score
+      data.patriotsScore,   // E: P Score
+      data.sessionId,       // F: Session ID (Hidden helper)
+      data.rsvp || ""       // G: RSVP
     ];
 
+    const nextRow = sheet.getLastRow() + 1;
     sheet.getRange(nextRow, 1, 1, newRow.length).setValues([newRow]);
 
-    return ContentService
-      .createTextOutput(JSON.stringify({ "result": "success", "row": nextRow }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ "result": "success", "row": nextRow });
 
   } catch (e) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ "result": "error", "error": e }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonResponse({ "result": "error", "error": e.toString() });
   } finally {
     lock.releaseLock();
   }
+}
+
+function jsonResponse(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 ```
 

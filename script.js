@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 // TODO: PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3JDcgtD0Shl6QJOFHEMq_7l2sLeyIpIr9ZsusWxzxakSH3LafxlS85bqi_oPnX0mqQw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwy3LXIu-nnjetFabuKb5Pxzmjo8C1hHKNtp7_1MlOIt8b4eYEBIkSKtt2k_pGjzYUGeQ/exec';
 
 let state = {
     selectedTeam: null, // 'seahawks' or 'patriots'
@@ -9,6 +9,9 @@ let state = {
     playerName: '',
     isDragging: false
 };
+
+// Generate a unique Session ID to update the row later
+const sessionId = Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 const teams = {
     seahawks: { name: "Seahawks", color: "#002244" },
@@ -319,6 +322,8 @@ function sendDataToSheet() {
     }
 
     const payload = {
+        action: "submit_score",
+        sessionId: sessionId,
         playerName: state.playerName,
         selectedTeam: state.selectedTeam,
         seahawksScore: state.seahawksScore,
@@ -335,6 +340,37 @@ function sendDataToSheet() {
     })
         .then(response => console.log("Data sent to sheet"))
         .catch(error => console.error("Error sending data:", error));
+}
+
+function sendRSVP(response) {
+    if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes('PASTE_YOUR_WEB_APP_URL_HERE')) {
+        console.warn("Google Script URL not set.");
+        return;
+    }
+
+    // Disable buttons
+    const btns = document.querySelectorAll('.rsvp-btn');
+    btns.forEach(btn => btn.disabled = true);
+
+    // Show confirmation immediately for UX
+    document.getElementById('rsvp-confirmation').classList.remove('hidden');
+
+    const payload = {
+        action: "update_rsvp",
+        sessionId: sessionId,
+        rsvp: response
+    };
+
+    fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+        .then(res => console.log("RSVP sent"))
+        .catch(err => console.error("Error sending RSVP:", err));
 }
 
 // 5. Calendar Integration
