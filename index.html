@@ -144,6 +144,15 @@
                 </div>
                 <p>Come watch the <span id="winning-team-name">Winner</span> take it all!</p>
 
+                <div class="rsvp-section">
+                    <h3 class="superbowl-title">Will you be able to attend?</h3>
+                    <div class="rsvp-buttons">
+                        <button onclick="sendRSVP('Yes')" class="rsvp-btn yes-btn">Yes</button>
+                        <button onclick="sendRSVP('No')" class="rsvp-btn no-btn">No</button>
+                    </div>
+                    <div id="rsvp-confirmation" class="hidden">Thanks for letting us know!</div>
+                </div>
+
                 <div class="calendar-actions">
                     <button onclick="addToICal()" class="calendar-btn ios-btn">
                         Add to Calendar (iPhone)
